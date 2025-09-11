@@ -6,6 +6,7 @@ import com.example.bloghive.authservice.model.entity.User;
 import com.example.bloghive.authservice.repository.RefreshTokenRepository;
 import com.example.bloghive.authservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -37,6 +38,7 @@ public class AuthService implements UserDetailsService {
     private JwtService jwtService;
 
     @Autowired
+    @Lazy
     private AuthenticationManager authenticationManager;
 
     @Override
