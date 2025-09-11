@@ -11,25 +11,24 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @EnableWebSecurity
 public class AppConfig {
-    
+
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
-    
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/posts/health").permitAll()
-                .requestMatchers("/actuator/**").permitAll()
-                // Allow GET requests for reading posts without authentication for now
-                .requestMatchers("GET", "/api/v1/posts/**").permitAll()
-                // Require authentication for POST, PUT, DELETE
-                .anyRequest().authenticated()
-            );
-        
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/v1/posts/health").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
+                        // Allow GET requests for reading posts without authentication for now
+                        .requestMatchers("GET", "/api/v1/posts/**").permitAll()
+                        // Require authentication for POST, PUT, DELETE
+                        .anyRequest().authenticated());
+
         return http.build();
     }
 }

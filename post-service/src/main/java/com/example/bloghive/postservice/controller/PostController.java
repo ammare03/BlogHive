@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/posts")
 @CrossOrigin(origins = "*")
 public class PostController {
-    
+
     @Autowired
     private PostService postService;
-    
+
     @PostMapping
     public ResponseEntity<PostResponse> createPost(@Valid @RequestBody CreatePostRequest request) {
         try {
@@ -26,14 +26,14 @@ public class PostController {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             Long authorId = Long.parseLong(auth.getName()); // Assuming username is user ID
             String authorUsername = (String) auth.getDetails(); // Will be set by JWT filter
-            
+
             PostResponse response = postService.createPost(request, authorId, authorUsername);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
         }
     }
-    
+
     @GetMapping("/{id}")
     public ResponseEntity<PostResponse> getPostById(@PathVariable Long id) {
         try {
@@ -43,7 +43,7 @@ public class PostController {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     @GetMapping("/slug/{slug}")
     public ResponseEntity<PostResponse> getPostBySlug(@PathVariable String slug) {
         try {
@@ -53,38 +53,38 @@ public class PostController {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     @GetMapping
     public ResponseEntity<Page<PostResponse>> getAllPosts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDirection) {
-        
+
         Page<PostResponse> posts = postService.getAllPosts(page, size, sortBy, sortDirection);
         return ResponseEntity.ok(posts);
     }
-    
+
     @GetMapping("/author/{authorId}")
     public ResponseEntity<Page<PostResponse>> getPostsByAuthor(
             @PathVariable Long authorId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        
+
         Page<PostResponse> posts = postService.getPostsByAuthor(authorId, page, size);
         return ResponseEntity.ok(posts);
     }
-    
+
     @GetMapping("/search")
     public ResponseEntity<Page<PostResponse>> searchPosts(
             @RequestParam String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        
+
         Page<PostResponse> posts = postService.searchPosts(keyword, page, size);
         return ResponseEntity.ok(posts);
     }
-    
+
     @PutMapping("/{id}")
     public ResponseEntity<PostResponse> updatePost(
             @PathVariable Long id,
@@ -93,28 +93,28 @@ public class PostController {
             // Get authenticated user info from JWT
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             Long authorId = Long.parseLong(auth.getName());
-            
+
             PostResponse response = postService.updatePost(id, request, authorId);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
         }
     }
-    
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         try {
             // Get authenticated user info from JWT
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             Long authorId = Long.parseLong(auth.getName());
-            
+
             postService.deletePost(id, authorId);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
         }
     }
-    
+
     @GetMapping("/health")
     public ResponseEntity<String> health() {
         return ResponseEntity.ok("Post Service is running");

@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auth")
 @CrossOrigin(origins = "*")
 public class AuthController {
-    
+
     @Autowired
     private AuthService authService;
-    
+
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
         try {
@@ -26,7 +26,7 @@ public class AuthController {
             return ResponseEntity.badRequest().build();
         }
     }
-    
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         try {
@@ -36,7 +36,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-    
+
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
         try {
@@ -46,7 +46,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-    
+
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@Valid @RequestBody RefreshTokenRequest request) {
         try {
@@ -56,7 +56,7 @@ public class AuthController {
             return ResponseEntity.badRequest().build();
         }
     }
-    
+
     // Internal service-to-service endpoint
     @GetMapping("/users/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
@@ -67,7 +67,7 @@ public class AuthController {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     // Internal service-to-service endpoint
     @GetMapping("/users/username/{username}")
     public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
@@ -78,7 +78,7 @@ public class AuthController {
             return ResponseEntity.notFound().build();
         }
     }
-    
+
     @GetMapping("/health")
     public ResponseEntity<String> health() {
         return ResponseEntity.ok("Auth Service is running");
