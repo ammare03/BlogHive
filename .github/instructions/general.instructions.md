@@ -6,7 +6,7 @@ Provide project context and coding guidelines that AI should follow when generat
 
 # Microservice Development Instructions
 
-This document defines how to build and structure each microservice for the blogging platform. Each microservice should exist in its **own project repository** and follow consistent standards. The goal is to ensure maintainability, scalability, and compatibility with the overall architecture.
+This document defines how to build and structure each microservice for the blogging platform. Each microservice should exist in its **own project repository** and follow consistent standards. The goal is to ensure maintainability, scalability, and compatibility with the overall architecture. Every time a new microservice is to be created, notify the user and ask them to create it.  
 
 ---
 
