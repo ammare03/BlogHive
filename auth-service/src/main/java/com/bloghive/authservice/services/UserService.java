@@ -3,6 +3,10 @@ package com.bloghive.authservice.services;
 import com.bloghive.authservice.models.User;
 import com.bloghive.authservice.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -10,13 +14,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -44,5 +48,17 @@ public class UserService {
 
     public void deleteById(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .roles(user.getRoles().toArray(new String[0]))
+                .build();
     }
 }

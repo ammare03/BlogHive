@@ -2,6 +2,7 @@ package com.bloghive.postservice.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,7 +14,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.crypto.SecretKey;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,14 +39,23 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
         String token = header.replace("Bearer ", "");
 
         try {
-            Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
+            // Use the modern, correct way to create a validation key
+            SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+
+            // Parse the token with the correct key
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
             String username = claims.getSubject();
             if (username != null) {
                 @SuppressWarnings("unchecked")
                 List<String> authorities = (List<String>) claims.get("authorities");
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                         username, null,
-                        authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
+                        authorities != null ? authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()) : List.of());
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         } catch (Exception e) {
