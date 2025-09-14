@@ -17,7 +17,7 @@ public class AuthValidationService {
     @Autowired
     private RestTemplate restTemplate;
 
-    private static final String AUTH_SERVICE_VALIDATE_URL = "http://localhost:8081/api/v1/auth/validate";
+    private static final String AUTH_SERVICE_VALIDATE_URL = "http://localhost:8085/api/v1/auth/validate";
 
     public User validateCredentials(AuthRequest authRequest) {
         try {

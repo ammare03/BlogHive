@@ -114,7 +114,8 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id, @Valid @RequestBody DeletePostRequestWithAuth request) {
+    public ResponseEntity<Void> deletePost(@PathVariable Long id,
+            @Valid @RequestBody DeletePostRequestWithAuth request) {
         try {
             // Validate credentials with auth service
             User user = authValidationService.validateCredentials(request.getAuth());

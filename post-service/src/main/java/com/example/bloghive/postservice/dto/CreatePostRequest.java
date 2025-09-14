@@ -14,6 +14,8 @@ public class CreatePostRequest {
     @NotBlank(message = "Content is required")
     private String content;
 
+    private String excerpt;
+
     private String slug;
 
     private Set<String> tags;
@@ -44,6 +46,14 @@ public class CreatePostRequest {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getExcerpt() {
+        return excerpt;
+    }
+
+    public void setExcerpt(String excerpt) {
+        this.excerpt = excerpt;
     }
 
     public String getSlug() {

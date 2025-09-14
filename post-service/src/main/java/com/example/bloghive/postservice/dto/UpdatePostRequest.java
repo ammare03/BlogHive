@@ -11,6 +11,8 @@ public class UpdatePostRequest {
 
     private String content;
 
+    private String excerpt;
+
     private String slug;
 
     private Set<String> tags;
@@ -36,6 +38,14 @@ public class UpdatePostRequest {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getExcerpt() {
+        return excerpt;
+    }
+
+    public void setExcerpt(String excerpt) {
+        this.excerpt = excerpt;
     }
 
     public String getSlug() {
