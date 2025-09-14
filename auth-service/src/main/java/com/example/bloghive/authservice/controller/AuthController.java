@@ -37,23 +37,18 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<AuthResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
+    // Note: No longer using refresh tokens or logout endpoints
+    // Login sessions are now stateless with username/password authentication
+
+    // Internal service-to-service endpoint for validation
+    @PostMapping("/validate")
+    public ResponseEntity<User> validateCredentials(@Valid @RequestBody LoginRequest request) {
         try {
-            AuthResponse response = authService.refreshToken(request);
-            return ResponseEntity.ok(response);
+            AuthResponse response = authService.login(request);
+            User user = authService.getUserByUsername(request.getUsername());
+            return ResponseEntity.ok(user);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@Valid @RequestBody RefreshTokenRequest request) {
-        try {
-            authService.logout(request.getRefreshToken());
-            return ResponseEntity.ok().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
         }
     }
 

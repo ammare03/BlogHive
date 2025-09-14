@@ -22,12 +22,7 @@ public class AppConfig {
         http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/posts/health").permitAll()
-                        .requestMatchers("/actuator/**").permitAll()
-                        // Allow GET requests for reading posts without authentication for now
-                        .requestMatchers("GET", "/api/v1/posts/**").permitAll()
-                        // Require authentication for POST, PUT, DELETE
-                        .anyRequest().authenticated());
+                        .anyRequest().permitAll()); // Allow all requests, authentication is handled in controllers
 
         return http.build();
     }

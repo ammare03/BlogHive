@@ -1,9 +1,7 @@
 package com.example.bloghive.authservice.service;
 
 import com.example.bloghive.authservice.dto.*;
-import com.example.bloghive.authservice.model.entity.RefreshToken;
 import com.example.bloghive.authservice.model.entity.User;
-import com.example.bloghive.authservice.repository.RefreshTokenRepository;
 import com.example.bloghive.authservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -17,10 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
-
 @Service
 @Transactional
 public class AuthService implements UserDetailsService {
@@ -29,13 +23,7 @@ public class AuthService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtService jwtService;
 
     @Autowired
     @Lazy
@@ -65,11 +53,7 @@ public class AuthService implements UserDetailsService {
 
         User savedUser = userRepository.save(user);
 
-        // Generate tokens
-        String accessToken = jwtService.generateAccessToken(savedUser);
-        String refreshToken = generateAndSaveRefreshToken(savedUser);
-
-        return createAuthResponse(accessToken, refreshToken, savedUser);
+        return createAuthResponse("Registration successful", savedUser);
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -81,56 +65,12 @@ public class AuthService implements UserDetailsService {
 
         User user = (User) authentication.getPrincipal();
 
-        // Generate tokens
-        String accessToken = jwtService.generateAccessToken(user);
-        String refreshToken = generateAndSaveRefreshToken(user);
-
-        return createAuthResponse(accessToken, refreshToken, user);
+        return createAuthResponse("Login successful", user);
     }
 
-    public AuthResponse refreshToken(RefreshTokenRequest request) {
-        RefreshToken refreshToken = refreshTokenRepository.findByToken(request.getRefreshToken())
-                .orElseThrow(() -> new RuntimeException("Refresh token not found"));
-
-        if (refreshToken.isExpired()) {
-            refreshTokenRepository.delete(refreshToken);
-            throw new RuntimeException("Refresh token expired");
-        }
-
-        User user = refreshToken.getUser();
-        String newAccessToken = jwtService.generateAccessToken(user);
-
+    private AuthResponse createAuthResponse(String message, User user) {
         return new AuthResponse(
-                newAccessToken,
-                request.getRefreshToken(),
-                jwtService.getAccessTokenExpiration(),
-                new AuthResponse.UserInfo(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name()));
-    }
-
-    public void logout(String refreshToken) {
-        Optional<RefreshToken> token = refreshTokenRepository.findByToken(refreshToken);
-        token.ifPresent(refreshTokenRepository::delete);
-    }
-
-    private String generateAndSaveRefreshToken(User user) {
-        // Delete existing refresh tokens for this user
-        refreshTokenRepository.deleteByUser(user);
-
-        // Generate new refresh token
-        String tokenValue = UUID.randomUUID().toString();
-        LocalDateTime expiresAt = LocalDateTime.now().plusSeconds(jwtService.getRefreshTokenExpiration() / 1000);
-
-        RefreshToken refreshToken = new RefreshToken(tokenValue, user, expiresAt);
-        refreshTokenRepository.save(refreshToken);
-
-        return tokenValue;
-    }
-
-    private AuthResponse createAuthResponse(String accessToken, String refreshToken, User user) {
-        return new AuthResponse(
-                accessToken,
-                refreshToken,
-                jwtService.getAccessTokenExpiration(),
+                message,
                 new AuthResponse.UserInfo(user.getId(), user.getUsername(), user.getEmail(), user.getRole().name()));
     }
 
