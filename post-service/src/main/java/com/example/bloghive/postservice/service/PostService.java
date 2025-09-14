@@ -4,12 +4,12 @@ import com.example.bloghive.postservice.dto.*;
 import com.example.bloghive.postservice.model.entity.Post;
 import com.example.bloghive.postservice.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
+//import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,14 +34,8 @@ public class PostService {
     @Autowired
     private RestTemplate restTemplate;
 
-    @Value("${auth.service.url}")
-    private String authServiceUrl;
 
     public PostResponse createPost(CreatePostRequest request, Long authorId, String authorUsername) {
-        // Validate author exists by calling Auth Service
-        if (!validateAuthor(authorId)) {
-            throw new RuntimeException("Author not found");
-        }
 
         // Create post
         Post post = new Post();
@@ -174,16 +168,6 @@ public class PostService {
 
         // Publish post deleted event
         publishPostEvent("POST_DELETED", post);
-    }
-
-    private boolean validateAuthor(Long authorId) {
-        try {
-            ResponseEntity<Object> response = restTemplate.getForEntity(
-                    authServiceUrl + "/api/v1/auth/users/" + authorId, Object.class);
-            return response.getStatusCode().is2xxSuccessful();
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     private void publishPostEvent(String eventType, Post post) {
