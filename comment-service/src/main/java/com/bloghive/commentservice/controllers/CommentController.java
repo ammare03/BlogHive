@@ -3,35 +3,35 @@ package com.bloghive.commentservice.controllers;
 import com.bloghive.commentservice.models.Comment;
 import com.bloghive.commentservice.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/comments")
 public class CommentController {
 
     @Autowired
     private CommentService commentService;
 
-    @GetMapping("/posts/{postId}/comments")
-    public ResponseEntity<List<Comment>> getCommentsByPostId(@PathVariable Long postId) {
-        return ResponseEntity.ok(commentService.findCommentsByPostId(postId));
+    @GetMapping("/post/{postId}")
+    public List<Comment> getCommentsByPostId(@PathVariable Long postId) {
+        return commentService.findByPostId(postId);
     }
 
-    @PostMapping("/posts/{postId}/comments")
-    public ResponseEntity<Comment> createComment(@PathVariable Long postId, @RequestBody Comment comment) {
-        comment.setPostId(postId);
-        // In a real application, you would get the authorId from the authenticated user
-        // For now, we'll use a placeholder
-        comment.setAuthorId(1L);
-        return ResponseEntity.status(HttpStatus.CREATED).body(commentService.saveComment(comment));
+    @PostMapping
+    public Comment createComment(@RequestBody Comment comment, Authentication authentication) {
+        // In a real app, you'd get the user ID from the authentication object
+        // For now, we'll just set a placeholder
+        comment.setUserId(1L); // Placeholder
+        return commentService.save(comment);
     }
 
-    @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId) {
-        commentService.deleteComment(commentId);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteComment(@PathVariable Long id) {
+        commentService.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 }

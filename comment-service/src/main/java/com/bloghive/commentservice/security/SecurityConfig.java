@@ -1,5 +1,6 @@
 package com.bloghive.commentservice.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,18 +14,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private JwtTokenAuthenticationFilter jwtTokenAuthenticationFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new JwtTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtTokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/posts/**/comments").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/posts/**/comments").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/comments/**").authenticated()
-                        .anyRequest().authenticated()
-                );
+                        .requestMatchers(HttpMethod.GET, "/comments/post/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/comments").authenticated()
+                        .anyRequest().authenticated());
         return http.build();
     }
 }

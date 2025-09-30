@@ -4,6 +4,7 @@ import com.bloghive.commentservice.models.Comment;
 import com.bloghive.commentservice.repositories.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -12,15 +13,15 @@ public class CommentService {
     @Autowired
     private CommentRepository commentRepository;
 
-    public List<Comment> findCommentsByPostId(Long postId) {
+    public List<Comment> findByPostId(Long postId) {
         return commentRepository.findByPostId(postId);
     }
 
-    public Comment saveComment(Comment comment) {
+    public Comment save(Comment comment) {
         return commentRepository.save(comment);
     }
 
-    public void deleteComment(Long commentId) {
-        commentRepository.deleteById(commentId);
+    public void deleteById(Long id) {
+        commentRepository.deleteById(id);
     }
 }
