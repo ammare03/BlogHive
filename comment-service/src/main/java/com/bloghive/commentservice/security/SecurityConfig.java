@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtTokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/comments/post/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/comments").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/comments/**").authenticated()
                         .anyRequest().authenticated());
         return http.build();
     }
