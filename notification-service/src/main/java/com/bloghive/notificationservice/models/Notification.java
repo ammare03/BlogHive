@@ -24,5 +24,5 @@ public class Notification {
     private String userId;
     private String message;
     private LocalDateTime timestamp;
-    private boolean isRead;
+    private boolean readStatus;
 }

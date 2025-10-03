@@ -22,7 +22,7 @@ public class NotificationService {
                 .userId(requestDto.getUserId())
                 .message(requestDto.getMessage())
                 .timestamp(LocalDateTime.now())
-                .isRead(false)
+                .readStatus(false)
                 .build();
         notificationRepository.save(notification);
 
