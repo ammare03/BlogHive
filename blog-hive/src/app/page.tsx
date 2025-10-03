@@ -19,7 +19,8 @@ export default function LandingPage() {
       author: "John Doe",
       description:
         "Learn how to build modern web applications with Next.js 15 and the App Router. Explore the latest features and best practices.",
-      image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80",
+      image:
+        "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80",
     },
     {
       id: 2,
@@ -27,7 +28,8 @@ export default function LandingPage() {
       author: "Jane Smith",
       description:
         "Discover how microservices can help you build scalable and maintainable applications. Learn about service discovery, API gateways, and more.",
-      image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80",
+      image:
+        "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80",
     },
     {
       id: 3,
@@ -35,7 +37,8 @@ export default function LandingPage() {
       author: "Alex Johnson",
       description:
         "Create beautiful, accessible user interfaces with Shadcn UI components. Learn how to customize and integrate them into your projects.",
-      image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80",
+      image:
+        "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80",
     },
   ];
 
@@ -93,7 +96,10 @@ export default function LandingPage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {featuredPosts.map((post) => (
-              <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+              <Card
+                key={post.id}
+                className="overflow-hidden hover:shadow-lg transition-shadow"
+              >
                 <div className="relative h-48 w-full">
                   <Image
                     src={post.image}

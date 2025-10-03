@@ -14,7 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "BlogHive - Discover Amazing Stories",
-  description: "Discover amazing stories, insights, and ideas from writers around the world. Join our community and share your voice with the world.",
+  description:
+    "Discover amazing stories, insights, and ideas from writers around the world. Join our community and share your voice with the world.",
 };
 
 export default function RootLayout({
