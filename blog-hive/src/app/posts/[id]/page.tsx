@@ -61,7 +61,7 @@ export default function SinglePostPage() {
 
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!commentContent.trim()) {
       setCommentError("Comment cannot be empty");
       return;
@@ -76,7 +76,7 @@ export default function SinglePostPage() {
       setSubmittingComment(true);
       setCommentError(null);
       const token = authService.getToken();
-      
+
       if (!token) {
         router.push("/login");
         return;
@@ -125,7 +125,7 @@ export default function SinglePostPage() {
       {/* Post Content */}
       <article className="mb-12">
         <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
-        
+
         <div className="flex items-center gap-2 text-gray-600 mb-8">
           <span>By Author {post.authorId}</span>
           <span>•</span>
