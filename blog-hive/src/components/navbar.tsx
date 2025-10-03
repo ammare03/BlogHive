@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Home, LogOut } from "lucide-react";
+import { Home, LogOut, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/auth-context";
 
@@ -31,6 +31,14 @@ export function Navbar() {
             >
               <Home className="h-4 w-4" />
               <span className="hidden sm:inline">Home</span>
+            </Link>
+            
+            <Link
+              href="/posts"
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <BookOpen className="h-4 w-4" />
+              <span className="hidden sm:inline">Posts</span>
             </Link>
 
             {isAuthenticated ? (
