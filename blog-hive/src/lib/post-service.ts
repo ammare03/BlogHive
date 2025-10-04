@@ -126,6 +126,10 @@ class PostService {
   }
 
   async getPostsByAuthor(authorId: number, token: string): Promise<Post[]> {
+    console.log(
+      `Fetching posts for author ${authorId} from: ${POST_SERVICE_URL}/author/${authorId}`
+    );
+
     const response = await fetch(`${POST_SERVICE_URL}/author/${authorId}`, {
       method: "GET",
       headers: {
@@ -135,10 +139,22 @@ class PostService {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch user posts");
+      const errorData = await response.json().catch(() => null);
+      const errorMessage =
+        errorData?.message ||
+        errorData?.error ||
+        `Failed to fetch user posts (${response.status})`;
+      console.error(
+        "Failed to fetch user posts:",
+        response.status,
+        errorMessage
+      );
+      throw new Error(errorMessage);
     }
 
-    return response.json();
+    const data = await response.json();
+    console.log(`Fetched ${data.length} posts for author ${authorId}`);
+    return data;
   }
 }
 

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
 import { postService, Post } from "@/lib/post-service";
 import { authService } from "@/lib/auth-service";
+import { getHtmlPreview } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -50,11 +51,14 @@ export default function DashboardPage() {
         setLoading(true);
         const token = authService.getToken();
         if (token) {
+          console.log("Fetching posts for user ID:", user.id);
           const data = await postService.getPostsByAuthor(user.id, token);
+          console.log("Fetched posts:", data);
           setPosts(data);
           setError(null);
         }
       } catch (err) {
+        console.error("Error fetching user posts:", err);
         setError(
           err instanceof Error ? err.message : "Failed to load your posts"
         );
@@ -150,8 +154,7 @@ export default function DashboardPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600 line-clamp-3 mb-4">
-                    {post.content.substring(0, 150)}
-                    {post.content.length > 150 ? "..." : ""}
+                    {getHtmlPreview(post.content, 150)}
                   </p>
                   <div className="flex gap-2">
                     <Button asChild variant="outline" size="sm">

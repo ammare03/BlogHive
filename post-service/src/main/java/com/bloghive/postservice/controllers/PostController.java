@@ -30,9 +30,17 @@ public class PostController {
 
     @PostMapping
     public Post createPost(@RequestBody Post post, Authentication authentication) {
-        // In a real app, you'd get the user ID from the authentication object
-        // For now, we'll just set a placeholder
-        post.setAuthorId(1L); // Placeholder
+        // Extract user ID from JWT token - the principal now contains the userId
+        if (authentication != null && authentication.getPrincipal() != null) {
+            try {
+                Long userId = Long.parseLong(authentication.getPrincipal().toString());
+                post.setAuthorId(userId);
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("Invalid user ID in authentication token");
+            }
+        } else {
+            throw new RuntimeException("Authentication required to create post");
+        }
         return postService.save(post);
     }
 
