@@ -132,11 +132,10 @@ export default function SinglePostPage() {
           <span>{new Date(post.createdAt).toLocaleDateString()}</span>
         </div>
 
-        <div className="prose max-w-none">
-          <p className="text-lg leading-relaxed whitespace-pre-wrap">
-            {post.content}
-          </p>
-        </div>
+        <div
+          className="post-content text-lg leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
       </article>
 
       {/* Comments Section */}

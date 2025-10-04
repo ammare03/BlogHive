@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { postService, Post } from "@/lib/post-service";
+import { getHtmlPreview } from "@/lib/utils";
 import {
   Card,
   CardContent,
@@ -71,8 +72,7 @@ export default function PostsPage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-gray-600 line-clamp-3">
-                    {post.content.substring(0, 150)}
-                    {post.content.length > 150 ? "..." : ""}
+                    {getHtmlPreview(post.content, 150)}
                   </p>
                 </CardContent>
               </Card>

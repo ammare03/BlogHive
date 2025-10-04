@@ -58,7 +58,20 @@ class PostService {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to create post");
+      const errorData = await response.json().catch(() => null);
+      let errorMessage =
+        errorData?.message ||
+        errorData?.error ||
+        `Failed to create post (${response.status})`;
+
+      // Add helpful context for common status codes
+      if (response.status === 403) {
+        errorMessage = "Access denied. Please log out and log in again.";
+      } else if (response.status === 401) {
+        errorMessage = "Not authenticated. Please log in.";
+      }
+
+      throw new Error(errorMessage);
     }
 
     return response.json();
@@ -79,7 +92,21 @@ class PostService {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to update post");
+      const errorData = await response.json().catch(() => null);
+      let errorMessage =
+        errorData?.message ||
+        errorData?.error ||
+        `Failed to update post (${response.status})`;
+
+      // Add helpful context for common status codes
+      if (response.status === 403) {
+        errorMessage =
+          "Access denied. You may not have permission to edit this post.";
+      } else if (response.status === 401) {
+        errorMessage = "Not authenticated. Please log in.";
+      }
+
+      throw new Error(errorMessage);
     }
 
     return response.json();
