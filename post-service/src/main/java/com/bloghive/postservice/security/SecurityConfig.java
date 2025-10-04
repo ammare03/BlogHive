@@ -23,7 +23,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtTokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/posts", "/posts/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/posts/author/**").authenticated()
                         .anyRequest().authenticated());
         return http.build();
     }

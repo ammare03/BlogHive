@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Home, LogOut, BookOpen } from "lucide-react";
+import { Home, LogOut, BookOpen, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/auth-context";
 
@@ -42,11 +42,20 @@ export function Navbar() {
             </Link>
 
             {isAuthenticated ? (
-              // Show logout button when user is authenticated
-              <Button variant="ghost" onClick={handleLogout}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
-              </Button>
+              // Show dashboard and logout when user is authenticated
+              <>
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                  <span className="hidden sm:inline">Dashboard</span>
+                </Link>
+                <Button variant="ghost" onClick={handleLogout}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </Button>
+              </>
             ) : (
               // Show login and register buttons when user is not authenticated
               <>

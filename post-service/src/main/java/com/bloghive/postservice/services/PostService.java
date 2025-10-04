@@ -29,4 +29,8 @@ public class PostService {
     public void deleteById(Long id) {
         postRepository.deleteById(id);
     }
+
+    public List<Post> findByAuthorId(Long authorId) {
+        return postRepository.findByAuthorId(authorId);
+    }
 }

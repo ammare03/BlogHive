@@ -97,6 +97,22 @@ class PostService {
       throw new Error("Failed to delete post");
     }
   }
+
+  async getPostsByAuthor(authorId: number, token: string): Promise<Post[]> {
+    const response = await fetch(`${POST_SERVICE_URL}/author/${authorId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch user posts");
+    }
+
+    return response.json();
+  }
 }
 
 export const postService = new PostService();

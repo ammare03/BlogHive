@@ -52,4 +52,9 @@ public class PostController {
         postService.deleteById(id);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/author/{authorId}")
+    public List<Post> getPostsByAuthor(@PathVariable Long authorId, Authentication authentication) {
+        return postService.findByAuthorId(authorId);
+    }
 }

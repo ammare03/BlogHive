@@ -83,6 +83,38 @@ class AuthService {
   logout(): void {
     this.removeToken();
   }
+
+  getCurrentUser(): User | null {
+    const token = this.getToken();
+    if (!token) {
+      return null;
+    }
+
+    try {
+      // Decode JWT token (payload is the middle part)
+      const payload = token.split(".")[1];
+      const decodedPayload = JSON.parse(atob(payload));
+
+      // Log the decoded payload for debugging
+      console.log("Decoded JWT payload:", decodedPayload);
+
+      // Check if userId exists in the token
+      if (!decodedPayload.userId) {
+        console.warn(
+          "Token does not contain userId. Please log out and log in again."
+        );
+      }
+
+      return {
+        id: decodedPayload.userId,
+        username: decodedPayload.sub, // sub contains the username
+        roles: decodedPayload.roles || [],
+      };
+    } catch (error) {
+      console.error("Failed to decode token:", error);
+      return null;
+    }
+  }
 }
 
 export const authService = new AuthService();

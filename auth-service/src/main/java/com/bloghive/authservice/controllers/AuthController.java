@@ -37,7 +37,12 @@ public class AuthController {
     public ResponseEntity<?> authenticateUser(@RequestBody User user) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-        String jwt = tokenProvider.generateToken(authentication);
+
+        // Get the user ID from the database
+        User dbUser = userService.findByUsername(user.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String jwt = tokenProvider.generateToken(authentication, dbUser.getId());
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 
