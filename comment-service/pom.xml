@@ -6,8 +6,8 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.5</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
+        <relativePath /> </parent>
+
     <groupId>com.bloghive</groupId>
     <artifactId>comment-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
