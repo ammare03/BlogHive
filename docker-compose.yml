@@ -1,0 +1,110 @@
+version: '3.8'
+
+services:
+  eureka-server:
+    build:
+      context: .
+      dockerfile: eureka-server/Dockerfile
+    image: vistaar07/eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - bloghive-net
+
+  config-server:
+    build:
+      context: .
+      dockerfile: config-server/Dockerfile
+    image: vistaar07/config-server
+    ports:
+      - "8888:8888"
+    networks:
+      - bloghive-net
+    depends_on:
+      - eureka-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    image: vistaar07/api-gateway
+    ports:
+      - "8080:8080"
+    networks:
+      - bloghive-net
+    depends_on:
+      - eureka-server
+      - config-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
+    image: vistaar07/auth-service
+    ports:
+      - "9001:9001"
+    networks:
+      - bloghive-net
+    depends_on:
+      - eureka-server
+      - config-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
+
+  post-service:
+    build:
+      context: .
+      dockerfile: post-service/Dockerfile
+    image: vistaar07/post-service
+    ports:
+      - "9002:9002"
+    networks:
+      - bloghive-net
+    depends_on:
+      - eureka-server
+      - config-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
+
+  comment-service:
+    build:
+      context: .
+      dockerfile: comment-service/Dockerfile
+    image: vistaar07/comment-service
+    ports:
+      - "9003:9003"
+    networks:
+      - bloghive-net
+    depends_on:
+      - eureka-server
+      - config-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: notification-service/Dockerfile
+    image: vistaar07/notification-service
+    ports:
+      - "9004:9004"
+    networks:
+      - bloghive-net
+    depends_on:
+      - eureka-server
+      - config-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
+
+networks:
+  bloghive-net:
+    driver: bridge
