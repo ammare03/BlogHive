@@ -22,12 +22,6 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_PROCESS_ROLES: 'broker,controller'
-      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:9093' # Required for new versions
-      KAFKA_NODE_ID: 1                               # Required for new versions
-      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'  # Required for new versions
-      CLUSTER_ID: 'SGc8NYJASB2am0JOKNEb_g'           # The critical missing piece
-      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
 
   mysql:
     image: mysql:8.0
@@ -177,6 +171,18 @@ services:
       - SPRING_CONFIG_IMPORT=configserver:http://config-server:8888
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/notificationdb?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+
+  frontend:
+    build:
+      context: ./blog-hive
+      dockerfile: Dockerfile
+    image: vistaar07/blog-hive-frontend
+    ports:
+      - "3000:3000"
+    networks:
+      - bloghive-net
+    depends_on:
+      - api-gateway
 
 networks:
   bloghive-net:
