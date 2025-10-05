@@ -1,10 +1,8 @@
-version: '3.8'
-
 services:
   eureka-server:
     build:
-      context: .
-      dockerfile: eureka-server/Dockerfile
+      context: ./eureka-server
+      dockerfile: Dockerfile
     image: vistaar07/eureka-server
     ports:
       - "8761:8761"
@@ -13,8 +11,8 @@ services:
 
   config-server:
     build:
-      context: .
-      dockerfile: config-server/Dockerfile
+      context: ./config-server
+      dockerfile: Dockerfile
     image: vistaar07/config-server
     ports:
       - "8888:8888"
@@ -27,8 +25,8 @@ services:
 
   api-gateway:
     build:
-      context: .
-      dockerfile: api-gateway/Dockerfile
+      context: ./api-gateway
+      dockerfile: Dockerfile
     image: vistaar07/api-gateway
     ports:
       - "8080:8080"
@@ -43,8 +41,8 @@ services:
 
   auth-service:
     build:
-      context: .
-      dockerfile: auth-service/Dockerfile
+      context: ./auth-service
+      dockerfile: Dockerfile
     image: vistaar07/auth-service
     ports:
       - "9001:9001"
@@ -59,8 +57,8 @@ services:
 
   post-service:
     build:
-      context: .
-      dockerfile: post-service/Dockerfile
+      context: ./post-service
+      dockerfile: Dockerfile
     image: vistaar07/post-service
     ports:
       - "9002:9002"
@@ -75,8 +73,8 @@ services:
 
   comment-service:
     build:
-      context: .
-      dockerfile: comment-service/Dockerfile
+      context: ./comment-service
+      dockerfile: Dockerfile
     image: vistaar07/comment-service
     ports:
       - "9003:9003"
@@ -91,8 +89,8 @@ services:
 
   notification-service:
     build:
-      context: .
-      dockerfile: notification-service/Dockerfile
+      context: ./notification-service
+      dockerfile: Dockerfile
     image: vistaar07/notification-service
     ports:
       - "9004:9004"
