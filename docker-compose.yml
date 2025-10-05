@@ -23,6 +23,11 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:9093' # Required for new versions
+      KAFKA_NODE_ID: 1                               # Required for new versions
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'  # Required for new versions
+      CLUSTER_ID: 'SGc8NYJASB2am0JOKNEb_g'           # The critical missing piece
+      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
 
   mysql:
     image: mysql:8.0
@@ -41,6 +46,7 @@ services:
       context: ./eureka-server
       dockerfile: Dockerfile
     image: vistaar07/eureka-server
+    restart: on-failure
     ports:
       - "8761:8761"
     networks:
@@ -50,7 +56,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-
+      start_period: 300s
+      
   config-server:
     build:
       context: ./config-server
