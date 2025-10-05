@@ -1,26 +1,36 @@
-# Build Next.js app (server mode)
-FROM node:18-alpine AS deps
-WORKDIR /app
-COPY package*.json ./
-# Install all dependencies (including dev) for build
-RUN npm ci
-
+# Build stage
 FROM node:18-alpine AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies
+RUN npm ci
+
+# Copy source code
 COPY . .
-# Disable Next telemetry in CI/Docker builds
+
+# Build the application
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
-# Run Next.js server
+# Production stage
 FROM node:18-alpine AS runner
 WORKDIR /app
+
 ENV NODE_ENV=production
-COPY --from=builder /app/package*.json ./
-# Install only production dependencies fresh instead of copying
-RUN npm ci --omit=dev
+
+# Copy package files and install production dependencies
+COPY package*.json ./
+RUN npm ci --production --ignore-scripts
+
+# Copy built application from builder
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
+
+# Expose port
 EXPOSE 3000
+
+# Start the application
 CMD ["npm", "start"]
