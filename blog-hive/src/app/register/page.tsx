@@ -20,6 +20,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
     username: "",
+    email: "",
     password: "",
     confirmPassword: "",
   });
@@ -41,7 +42,12 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     // Basic validation
-    if (!formData.username || !formData.password || !formData.confirmPassword) {
+    if (
+      !formData.username ||
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
       setError("Please fill in all fields");
       setIsLoading(false);
       return;
@@ -62,6 +68,7 @@ export default function RegisterPage() {
     try {
       await authService.register({
         username: formData.username,
+        email: formData.email,
         password: formData.password,
       });
 
@@ -99,6 +106,19 @@ export default function RegisterPage() {
                 type="text"
                 placeholder="Choose a username"
                 value={formData.username}
+                onChange={handleChange}
+                disabled={isLoading}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="your@email.com"
+                value={formData.email}
                 onChange={handleChange}
                 disabled={isLoading}
                 required

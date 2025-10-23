@@ -39,7 +39,7 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
 
         // Get the user ID from the database
-        User dbUser = userService.findByUsername(user.getUsername())
+        User dbUser = userService.findByUsernameOrEmail(user.getUsername(), user.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         String jwt = tokenProvider.generateToken(authentication, dbUser.getId());
@@ -88,6 +88,7 @@ class UserController {
         return userService.findById(id)
                 .map(user -> {
                     user.setUsername(userDetails.getUsername());
+                    user.setEmail(userDetails.getEmail());
                     user.setRoles(userDetails.getRoles());
                     return ResponseEntity.ok(userService.save(user));
                 })
