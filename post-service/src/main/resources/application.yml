@@ -1,0 +1,21 @@
+# Service Name (Must match the name used in the config repo file: post-service.properties)
+spring:
+  application:
+    name: post-service
+  config:
+    # Explicitly import configuration from the Config Server
+    import: configserver:http://localhost:8888
+
+# Eureka Client Configuration (Needed during bootstrap)
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    hostname: localhost
+
+# Optional: Fail fast if the config server cannot be reached on startup
+# spring.cloud.config.fail-fast: true
+
+# Optional: Profile (e.g., 'dev', 'prod')
+# spring.profiles.active: dev
