@@ -62,7 +62,25 @@ public class PostController {
     }
 
     @GetMapping("/author/{authorId}")
-    public List<Post> getPostsByAuthor(@PathVariable Long authorId, Authentication authentication) {
-        return postService.findByAuthorId(authorId);
+    public ResponseEntity<List<Post>> getPostsByAuthor(@PathVariable Long authorId, Authentication authentication) {
+        // Get the authenticated user's ID from the token
+        if (authentication == null || authentication.getPrincipal() == null) {
+            return ResponseEntity.status(401).build(); // Unauthorized
+        }
+
+        Long authenticatedUserId;
+        try {
+            authenticatedUserId = Long.parseLong(authentication.getPrincipal().toString());
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(401).build(); // Invalid principal
+        }
+
+        // Ensure the authenticated user is requesting their own posts
+        if (!authenticatedUserId.equals(authorId)) {
+            return ResponseEntity.status(403).build(); // Forbidden
+        }
+
+        List<Post> posts = postService.findByAuthorId(authorId);
+        return ResponseEntity.ok(posts);
     }
 }

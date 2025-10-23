@@ -24,7 +24,10 @@ public class SecurityConfig {
                 .addFilterBefore(jwtTokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/posts", "/posts/{id}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/posts/author/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/posts").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/posts/{id}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/posts/{id}").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/posts/author/{authorId}").authenticated()
                         .anyRequest().authenticated());
         return http.build();
     }
