@@ -1,0 +1,194 @@
+version: '3.8' # Specify docker-compose version
+
+networks: # Define a custom network
+  bloghive-net:
+    driver: bridge
+
+volumes: # Define volumes for data persistence
+  mysql-data:
+    driver: local
+
+services:
+  # --- Configuration Server ---
+  config-server:
+    image: ammare03/bloghive-config-server:latest # Replace with your actual image name and tag
+    container_name: config-server
+    networks:
+      - bloghive-net
+    ports:
+      - "8888:8888"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  # --- Eureka Server ---
+  eureka-server:
+    build: ./eureka-server/ # Path to the eureka-server Dockerfile context
+    container_name: eureka-server
+    networks:
+      - bloghive-net
+    ports:
+      - "8761:8761" # Expose Eureka port to host
+    depends_on:
+      config-server: # Wait for config-server to start
+        condition: service_healthy # Wait until config-server is healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  # --- MySQL Database ---
+  mysql-db:
+    image: mysql:8.0 # Use an official MySQL image
+    container_name: mysql-db
+    networks:
+      - bloghive-net
+    ports:
+      - "3309:3306" # Map host port 3309 to container port 3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} # CHANGE THIS
+      MYSQL_DATABASE: authdb # Initial database (others created by services)
+      # You might need separate users/passwords per service in production
+    volumes:
+      - mysql-data:/var/lib/mysql # Persist data using the named volume
+    command: --default-authentication-plugin=mysql_native_password # Use older auth plugin if needed by connector
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uroot", "-p ${MYSQL_ROOT_PASSWORD}"] # CHANGE PASSWORD
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # --- Auth Service ---
+  auth-service:
+    build: ./auth-service/
+    container_name: auth-service
+    networks:
+      - bloghive-net
+    ports:
+      - "8082:8082" # Expose for potential direct access/debugging
+    environment:
+      # Override config server properties via environment variables
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD} # CHANGE THIS (or remove if using root)
+      # Add other environment variables as needed (e.g., JWT secret if not in config repo)
+      # JWT_SECRET: ${JWT_SECRET_ENV_VAR}
+    depends_on:
+      config-server:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      mysql-db:
+        condition: service_healthy
+
+  # --- Post Service ---
+  post-service:
+    build: ./post-service/
+    container_name: post-service
+    networks:
+      - bloghive-net
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD} # CHANGE THIS
+    depends_on:
+      config-server:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      mysql-db:
+        condition: service_healthy
+
+  # --- Comment Service ---
+  comment-service:
+    build: ./comment-service/
+    container_name: comment-service
+    networks:
+      - bloghive-net
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD} # CHANGE THIS
+    depends_on:
+      config-server:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      mysql-db:
+        condition: service_healthy
+
+  # --- Notification Service ---
+  # NOTE: Kafka setup is NOT included here. You'd need to add Kafka & Zookeeper services
+  #       or connect to an external Kafka instance.
+  notification-service:
+    build: ./notification-service/
+    container_name: notification-service
+    networks:
+      - bloghive-net
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD} # CHANGE THIS
+      SPRING_MAIL_PASSWORD: ${EMAIL_PASSWORD} # CHANGE THIS - USE ENV VARS IN PROD!
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092 # Assuming a Kafka service named 'kafka'
+    depends_on:
+      config-server:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      mysql-db:
+        condition: service_healthy
+      # kafka: # Add dependency if running Kafka in Docker Compose
+      #   condition: service_started
+
+  # --- API Gateway ---
+  api-gateway:
+    build: ./api-gateway/
+    container_name: api-gateway
+    networks:
+      - bloghive-net
+    ports:
+      - "8081:8081" # Expose the main entry point to the host
+    environment:
+      # Gateway doesn't typically need config server directly, but needs Eureka
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      # Ensure gateway routes use service names (lb://auth-service, etc.)
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      # Optionally wait for backend services
+      auth-service:
+        condition: service_started # Or service_healthy if health checks are added
+      post-service:
+        condition: service_started
+      comment-service:
+        condition: service_started
+
+  # --- BlogHive Frontend (Next.js) ---
+  blog-hive-frontend:
+    build:
+      context: ./blog-hive/ # Path to the frontend Dockerfile context
+      args:
+        # Override the build argument to use the API Gateway service name
+        NEXT_PUBLIC_API_URL: http://api-gateway:8081
+    container_name: blog-hive-frontend
+    networks:
+      - bloghive-net
+    ports:
+      - "3000:3000" # Expose frontend port to host
+    depends_on:
+      api-gateway: # Depends on the gateway being started
+        condition: service_started
