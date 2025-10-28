@@ -2,9 +2,9 @@
 spring:
   application:
     name: post-service
-  config:
-    # Explicitly import configuration from the Config Server
-    import: configserver:http://localhost:8888
+  # config:
+  #   # Explicitly import configuration from the Config Server
+  #   import: configserver:http://localhost:8888
 
 # Eureka Client Configuration (Needed during bootstrap)
 eureka:

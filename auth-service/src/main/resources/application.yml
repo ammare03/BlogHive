@@ -2,9 +2,9 @@
 spring:
   application:
     name: auth-service
-  config:
-    # Explicitly import configuration from the Config Server
-    import: configserver:http://localhost:8888 # Combines import and URI
+  # config:
+  #   # Explicitly import configuration from the Config Server
+  #   import: configserver:http://localhost:8888 # Combines import and URI
 
 # Eureka Client Configuration (Needed during bootstrap)
 eureka:

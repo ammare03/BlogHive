@@ -19,6 +19,9 @@ services:
       - "8888:8888"
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    dns: # <-- Add this section
+      - 8.8.8.8
+      - 1.1.1.1
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
       interval: 30s
@@ -34,6 +37,9 @@ services:
       - bloghive-net
     ports:
       - "8761:8761" # Expose Eureka port to host
+    dns: # <-- Add this section
+      - 8.8.8.8
+      - 1.1.1.1
     depends_on:
       config-server: # Wait for config-server to start
         condition: service_healthy # Wait until config-server is healthy
@@ -51,7 +57,10 @@ services:
     networks:
       - bloghive-net
     ports:
-      - "3309:3306" # Map host port 3309 to container port 3306
+      - "3310:3306" # Map host port 3309 to container port 3306
+    dns: # <-- Add this section
+      - 8.8.8.8
+      - 1.1.1.1
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} # CHANGE THIS
       MYSQL_DATABASE: authdb # Initial database (others created by services)
@@ -73,9 +82,12 @@ services:
       - bloghive-net
     ports:
       - "8082:8082" # Expose for potential direct access/debugging
+    dns: # <-- Add this section
+      - 8.8.8.8
+      - 1.1.1.1
     environment:
       # Override config server properties via environment variables
-      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD} # CHANGE THIS (or remove if using root)
       # Add other environment variables as needed (e.g., JWT secret if not in config repo)
@@ -96,8 +108,11 @@ services:
       - bloghive-net
     ports:
       - "8083:8083"
+    dns: # <-- Add this section
+      - 8.8.8.8
+      - 1.1.1.1
     environment:
-      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD} # CHANGE THIS
     depends_on:
@@ -116,8 +131,11 @@ services:
       - bloghive-net
     ports:
       - "8084:8084"
+    dns: # <-- Add this section
+      - 8.8.8.8
+      - 1.1.1.1
     environment:
-      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD} # CHANGE THIS
     depends_on:
@@ -138,8 +156,11 @@ services:
       - bloghive-net
     ports:
       - "8085:8085"
+    dns: # <-- Add this section
+      - 8.8.8.8
+      - 1.1.1.1
     environment:
-      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD} # CHANGE THIS
       SPRING_MAIL_PASSWORD: ${EMAIL_PASSWORD} # CHANGE THIS - USE ENV VARS IN PROD!
@@ -162,6 +183,9 @@ services:
       - bloghive-net
     ports:
       - "8081:8081" # Expose the main entry point to the host
+    dns: # <-- Add this section
+      - 8.8.8.8
+      - 1.1.1.1
     environment:
       # Gateway doesn't typically need config server directly, but needs Eureka
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
