@@ -207,7 +207,7 @@ services:
       context: ./blog-hive/ # Path to the frontend Dockerfile context
       args:
         # Override the build argument to use the API Gateway service name
-        NEXT_PUBLIC_API_URL: http://api-gateway:8081
+        NEXT_PUBLIC_API_URL: http://localhost:8081
     container_name: blog-hive-frontend
     networks:
       - bloghive-net
