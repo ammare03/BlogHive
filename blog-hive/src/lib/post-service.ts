@@ -1,5 +1,5 @@
 // API configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081";
 const POST_SERVICE_URL = `${API_BASE_URL}/posts`;
 
 export interface Post {
