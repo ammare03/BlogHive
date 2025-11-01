@@ -1,0 +1,174 @@
+# ----------------- Auth Service -----------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+  namespace: bloghive
+spec:
+  selector:
+    app: auth-service
+  ports:
+    - protocol: TCP
+      port: 9000
+      targetPort: 9000
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service-deployment
+  namespace: bloghive
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: ammare03/auth-service:latest
+          ports:
+            - containerPort: 9000
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_CONFIG_IMPORT
+              value: "configserver:http://config-server:8888"
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: "http://eureka-server:8761/eureka/"
+
+---
+# ----------------- Post Service -----------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: post-service
+  namespace: bloghive
+spec:
+  selector:
+    app: post-service
+  ports:
+    - protocol: TCP
+      port: 9001
+      targetPort: 9001
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-service-deployment
+  namespace: bloghive
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: post-service
+  template:
+    metadata:
+      labels:
+        app: post-service
+    spec:
+      containers:
+        - name: post-service
+          image: ammare03/post-service:latest
+          ports:
+            - containerPort: 9001
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_CONFIG_IMPORT
+              value: "configserver:http://config-server:8888"
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: "http://eureka-server:8761/eureka/"
+
+---
+# ----------------- Comment Service -----------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: comment-service
+  namespace: bloghive
+spec:
+  selector:
+    app: comment-service
+  ports:
+    - protocol: TCP
+      port: 9002
+      targetPort: 9002
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comment-service-deployment
+  namespace: bloghive
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: comment-service
+  template:
+    metadata:
+      labels:
+        app: comment-service
+    spec:
+      containers:
+        - name: comment-service
+          image: ammare03/comment-service:latest
+          ports:
+            - containerPort: 9002
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_CONFIG_IMPORT
+              value: "configserver:http://config-server:8888"
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: "http://eureka-server:8761/eureka/"
+
+---
+# ----------------- Notification Service -----------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service
+  namespace: bloghive
+spec:
+  selector:
+    app: notification-service
+  ports:
+    - protocol: TCP
+      port: 9003
+      targetPort: 9003
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service-deployment
+  namespace: bloghive
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      containers:
+        - name: notification-service
+          image: ammare03/notification-service:latest
+          ports:
+            - containerPort: 9003
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_CONFIG_IMPORT
+              value: "configserver:http://config-server:8888"
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: "http://eureka-server:8761/eureka/"
