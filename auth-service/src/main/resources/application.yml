@@ -4,13 +4,13 @@ spring:
     name: auth-service
   # config:
   #   # Explicitly import configuration from the Config Server
-  #   import: configserver:http://localhost:8888 # Combines import and URI
+    import: configserver:http://config-server:8888 # Combines import and URI
 
 # Eureka Client Configuration (Needed during bootstrap)
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://eureka-server:8761/eureka/
   instance:
     hostname: localhost
 

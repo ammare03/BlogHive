@@ -4,7 +4,7 @@ spring:
     name: comment-service
   # config:
   #   # Explicitly import configuration from the Config Server
-  #   import: configserver:http://localhost:8888
+    import: configserver:http://config-server:8888
 
 # Eureka Client Configuration (Needed during bootstrap)
 eureka:
