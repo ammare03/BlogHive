@@ -32,6 +32,7 @@ services:
   # --- Eureka Server ---
   eureka-server:
     build: ./eureka-server/ # Path to the eureka-server Dockerfile context
+    image: ammare03/eureka-server:latest
     container_name: eureka-server
     networks:
       - bloghive-net
@@ -77,6 +78,7 @@ services:
   # --- Auth Service ---
   auth-service:
     build: ./auth-service/
+    image: ammare03/auth-service:latest
     container_name: auth-service
     networks:
       - bloghive-net
@@ -103,6 +105,7 @@ services:
   # --- Post Service ---
   post-service:
     build: ./post-service/
+    image: ammare03/post-service:latest
     container_name: post-service
     networks:
       - bloghive-net
@@ -126,6 +129,7 @@ services:
   # --- Comment Service ---
   comment-service:
     build: ./comment-service/
+    image: ammare03/comment-service:latest
     container_name: comment-service
     networks:
       - bloghive-net
@@ -149,6 +153,7 @@ services:
   # --- API Gateway ---
   api-gateway:
     build: ./api-gateway/
+    image: ammare03/api-gateway:latest
     container_name: api-gateway
     networks:
       - bloghive-net
@@ -179,6 +184,7 @@ services:
       args:
         # Override the build argument to use the API Gateway service name
         NEXT_PUBLIC_API_URL: http://localhost:8081
+    image: ammare03/blog-hive-frontend:latest
     container_name: blog-hive-frontend
     networks:
       - bloghive-net
