@@ -40,6 +40,22 @@ spec:
               value: "configserver:http://config-server:8888"
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: "http://eureka-server:8761/eureka/"
+            # --- Retry settings ---
+            - name: SPRING_CLOUD_CONFIG_FAIL_FAST
+              value: "false"
+            - name: SPRING_CLOUD_CONFIG_RETRY_ENABLED
+              value: "true"
+            - name: SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS
+              value: "30"
+            - name: SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL
+              value: "3000"
+            - name: EUREKA_CLIENT_RETRY_ENABLED
+              value: "true"
+            # --- Database Credentials ---
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "root"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "rootpassword"
 
 ---
 # ----------------- Post Service -----------------
@@ -84,6 +100,22 @@ spec:
               value: "configserver:http://config-server:8888"
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: "http://eureka-server:8761/eureka/"
+            # --- Retry settings ---
+            - name: SPRING_CLOUD_CONFIG_FAIL_FAST
+              value: "false"
+            - name: SPRING_CLOUD_CONFIG_RETRY_ENABLED
+              value: "true"
+            - name: SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS
+              value: "30"
+            - name: SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL
+              value: "3000"
+            - name: EUREKA_CLIENT_RETRY_ENABLED
+              value: "true"
+            # --- Database Credentials ---
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "root"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "rootpassword"
 
 ---
 # ----------------- Comment Service -----------------
@@ -128,47 +160,19 @@ spec:
               value: "configserver:http://config-server:8888"
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: "http://eureka-server:8761/eureka/"
-
----
-# ----------------- Notification Service -----------------
-apiVersion: v1
-kind: Service
-metadata:
-  name: notification-service
-  namespace: bloghive
-spec:
-  selector:
-    app: notification-service
-  ports:
-    - protocol: TCP
-      port: 9003
-      targetPort: 9003
-  type: ClusterIP
-
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: notification-service-deployment
-  namespace: bloghive
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: notification-service
-  template:
-    metadata:
-      labels:
-        app: notification-service
-    spec:
-      containers:
-        - name: notification-service
-          image: ammare03/notification-service:latest
-          ports:
-            - containerPort: 9003
-          imagePullPolicy: Always
-          env:
-            - name: SPRING_CONFIG_IMPORT
-              value: "configserver:http://config-server:8888"
-            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
-              value: "http://eureka-server:8761/eureka/"
+            # --- Retry settings ---
+            - name: SPRING_CLOUD_CONFIG_FAIL_FAST
+              value: "false"
+            - name: SPRING_CLOUD_CONFIG_RETRY_ENABLED
+              value: "true"
+            - name: SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS
+              value: "30"
+            - name: SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL
+              value: "3000"
+            - name: EUREKA_CLIENT_RETRY_ENABLED
+              value: "true"
+            # --- Database Credentials ---
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "root"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "rootpassword"
