@@ -36,18 +36,9 @@ spec:
             - containerPort: 8080
           imagePullPolicy: Always
           env:
-            - name: SPRING_CONFIG_IMPORT
-              value: "configserver:http://config-server:8888"
+            - name: SERVER_PORT
+              value: "8080"
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: "http://eureka-server:8761/eureka/"
-            # --- These lines are the fix ---
-            - name: SPRING_CLOUD_CONFIG_FAIL_FAST
-              value: "false"
-            - name: SPRING_CLOUD_CONFIG_RETRY_ENABLED
-              value: "true"
-            - name: SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS
-              value: "30"
-            - name: SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL
-              value: "3000"
             - name: EUREKA_CLIENT_RETRY_ENABLED
               value: "true"

@@ -1,5 +1,5 @@
 // API configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:80";
 const AUTH_SERVICE_URL = `${API_BASE_URL}/auth`;
 
 export interface LoginRequest {
