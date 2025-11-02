@@ -146,35 +146,6 @@ services:
       mysql-db:
         condition: service_healthy
 
-  # --- Notification Service ---
-  # NOTE: Kafka setup is NOT included here. You'd need to add Kafka & Zookeeper services
-  #       or connect to an external Kafka instance.
-  notification-service:
-    build: ./notification-service/
-    container_name: notification-service
-    networks:
-      - bloghive-net
-    ports:
-      - "8085:8085"
-    dns: # <-- Add this section
-      - 8.8.8.8
-      - 1.1.1.1
-    environment:
-      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD} # CHANGE THIS
-      SPRING_MAIL_PASSWORD: ${EMAIL_PASSWORD} # CHANGE THIS - USE ENV VARS IN PROD!
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092 # Assuming a Kafka service named 'kafka'
-    depends_on:
-      config-server:
-        condition: service_healthy
-      eureka-server:
-        condition: service_healthy
-      mysql-db:
-        condition: service_healthy
-      # kafka: # Add dependency if running Kafka in Docker Compose
-      #   condition: service_started
-
   # --- API Gateway ---
   api-gateway:
     build: ./api-gateway/
