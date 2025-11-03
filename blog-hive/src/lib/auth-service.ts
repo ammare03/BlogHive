@@ -5,7 +5,6 @@ const AUTH_SERVICE_URL = `${API_BASE_URL}/auth`;
 export interface LoginRequest {
   username: string;
   password: string;
-  email: string;
 }
 
 export interface RegisterRequest {

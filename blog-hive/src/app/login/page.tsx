@@ -22,7 +22,6 @@ export default function LoginPage() {
   const { login } = useAuth();
   const [formData, setFormData] = useState({
     username: "",
-    email: "",
     password: "",
   });
   const [error, setError] = useState("");
@@ -43,7 +42,7 @@ export default function LoginPage() {
     setIsLoading(true);
 
     // Basic validation
-    if (!formData.username || !formData.password || !formData.email) {
+    if (!formData.username || !formData.password) {
       setError("Please fill in all fields");
       setIsLoading(false);
       return;
@@ -83,19 +82,6 @@ export default function LoginPage() {
                 type="text"
                 placeholder="Enter your username"
                 value={formData.username}
-                onChange={handleChange}
-                disabled={isLoading}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="Enter your email"
-                value={formData.email}
                 onChange={handleChange}
                 disabled={isLoading}
                 required
