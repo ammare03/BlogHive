@@ -2,7 +2,7 @@ package com.bloghive.authservice.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod; // Make sure this is imported
+import org.springframework.http.HttpMethod; // <-- Make sure this is imported
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,10 +32,14 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // THIS IS THE FIX:
                         // Add explicit permitAll for login and register POST requests
                         .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/register").permitAll()
+
                         // Keep the general permitAll for other /auth paths (if any) and /users
                         .requestMatchers("/auth/**", "/users/**").permitAll()
+
+                        // Authenticate all other requests
                         .anyRequest().authenticated());
         return http.build();
     }
