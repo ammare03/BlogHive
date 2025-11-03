@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
         - name: blog-hive
-          image: ammare03/blog-hive:latest
+          image: 457795063740.dkr.ecr.us-east-1.amazonaws.com/blog-hive-frontend:latest
           ports:
             - containerPort: 3000
           imagePullPolicy: Always

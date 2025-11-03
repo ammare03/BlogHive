@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
         - name: auth-service
-          image: ammare03/auth-service:latest
+          image: 457795063740.dkr.ecr.us-east-1.amazonaws.com/auth-service:latest
           ports:
             - containerPort: 9000
           imagePullPolicy: Always
@@ -51,11 +51,6 @@ spec:
               value: "3000"
             - name: EUREKA_CLIENT_RETRY_ENABLED
               value: "true"
-            # --- Database Credentials ---
-            - name: SPRING_DATASOURCE_USERNAME
-              value: "root"
-            - name: SPRING_DATASOURCE_PASSWORD
-              value: "rootpassword"
 
 ---
 # ----------------- Post Service -----------------
@@ -91,7 +86,7 @@ spec:
     spec:
       containers:
         - name: post-service
-          image: ammare03/post-service:latest
+          image: 457795063740.dkr.ecr.us-east-1.amazonaws.com/post-service:latest
           ports:
             - containerPort: 9001
           imagePullPolicy: Always
@@ -111,11 +106,6 @@ spec:
               value: "3000"
             - name: EUREKA_CLIENT_RETRY_ENABLED
               value: "true"
-            # --- Database Credentials ---
-            - name: SPRING_DATASOURCE_USERNAME
-              value: "root"
-            - name: SPRING_DATASOURCE_PASSWORD
-              value: "rootpassword"
 
 ---
 # ----------------- Comment Service -----------------
@@ -151,7 +141,7 @@ spec:
     spec:
       containers:
         - name: comment-service
-          image: ammare03/comment-service:latest
+          image: 457795063740.dkr.ecr.us-east-1.amazonaws.com/comment-service:latest
           ports:
             - containerPort: 9002
           imagePullPolicy: Always
@@ -171,8 +161,3 @@ spec:
               value: "3000"
             - name: EUREKA_CLIENT_RETRY_ENABLED
               value: "true"
-            # --- Database Credentials ---
-            - name: SPRING_DATASOURCE_USERNAME
-              value: "root"
-            - name: SPRING_DATASOURCE_PASSWORD
-              value: "rootpassword"

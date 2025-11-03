@@ -17,7 +17,9 @@ public class CorsConfig {
         CorsConfiguration corsConfig = new CorsConfiguration();
 
         // Allow requests from the Next.js frontend
-        corsConfig.setAllowedOrigins(List.of("http://localhost:3000"));
+        corsConfig.setAllowedOrigins(List.of("http://localhost:3000",
+                "http://a4b8b3dcb0db84537afaad462e4a4798-796492693.us-east-1.elb.amazonaws.com:3000"));
+                
 
         // Allow all HTTP methods
         corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
